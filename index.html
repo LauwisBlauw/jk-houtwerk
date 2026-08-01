@@ -202,6 +202,9 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
 .merk-beeld { display: block; height: 34px; width: auto; }
 .site-voet .merk-beeld { height: 27px; }
 @media (max-width: 560px) { .merk-beeld { height: 27px; } }
+/* Staande telefoon: daar is hoogte genoeg, dus mag het merk wat groter. In
+   liggende stand blijft het klein, want daar telt elke pixel hoogte. */
+@media (max-width: 560px) and (orientation: portrait) { .merk-beeld { height: 34px; } }
 /* Op een breed scherm mag het merk groter: dan is de ondertitel goed te lezen. */
 @media (min-width: 1100px) {
   :root { --kop-hoogte: 92px; }
@@ -844,11 +847,16 @@ div.foto { display: grid; place-items: center; }
   const TOON_TIJD = 600;
   document.querySelectorAll('.hoofdnav a, .voet-grid a, [data-thema]').forEach((el) => {
     let terug;
-    el.addEventListener('click', () => {
+    const licht = () => {
       el.classList.add('getikt');
       clearTimeout(terug);
       terug = setTimeout(() => el.classList.remove('getikt'), TOON_TIJD);
-    });
+    };
+    // Bij het neerkomen van de vinger, niet pas bij loslaten: een link in de
+    // voet springt de pagina meteen omhoog, en dan is de voet al uit beeld.
+    // 'click' blijft erbij voor bediening met het toetsenbord.
+    el.addEventListener('pointerdown', licht);
+    el.addEventListener('click', licht);
   });
 })();
 
