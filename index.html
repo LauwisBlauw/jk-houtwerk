@@ -156,7 +156,7 @@ section { padding-block: var(--sp-7); }
    voorkomt dat er een streepje van het vorige blok blijft staan. #hoofd staat
    erbij voor de logolink: anders schuift de opening onder de balk weg en komen
    de diensten alsnog in beeld. */
-section, #hoofd { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoogte)) - 1px); }
+section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoogte)) - 1px); }
 .hero + section { padding-top: var(--sp-6); }
 .diep { background: var(--diep-bg); color: var(--tekst-op-diep); }
 .diep h2, .diep h3 { color: var(--tekst-op-diep); }
@@ -311,6 +311,9 @@ section, #hoofd { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoogte)) - 1
   display: flex; gap: 0.55rem;
 }
 .dienst-werk li::before { content: "—"; color: var(--accent); flex: none; }
+
+/* Komt iemand via een link in de voet binnen, dan licht die dienst even op. */
+.dienst:target { background: color-mix(in srgb, var(--accent) 9%, transparent); }
 
 @media (max-width: 860px) {
   .dienst { grid-template-columns: 1fr; gap: var(--sp-3); }
@@ -537,7 +540,7 @@ div.foto { display: grid; place-items: center; }
       </div>
 
       <div class="diensten-lijst reveal">
-        <article class="dienst">
+        <article class="dienst" id="timmerwerk-op-maat">
           <div class="dienst-kop">
             <h3>Timmerwerk op maat</h3>
             <p>Maatwerkoplossingen die volledig worden afgestemd op uw wensen en de beschikbare ruimte.</p>
@@ -553,7 +556,7 @@ div.foto { display: grid; place-items: center; }
           </div>
         </article>
 
-        <article class="dienst">
+        <article class="dienst" id="houtherstel-en-kozijnreparatie">
           <div class="dienst-kop">
             <h3>Houtherstel &amp; kozijnreparatie</h3>
             <p>Duurzaam herstel van houtrot met eerlijk advies en oog voor kwaliteit.</p>
@@ -570,7 +573,7 @@ div.foto { display: grid; place-items: center; }
           </div>
         </article>
 
-        <article class="dienst">
+        <article class="dienst" id="aftimmerwerk">
           <div class="dienst-kop">
             <h3>Aftimmerwerk</h3>
             <p>Voor een strakke en verzorgde afwerking van uw woning, met oog voor detail.</p>
@@ -586,7 +589,7 @@ div.foto { display: grid; place-items: center; }
           </div>
         </article>
 
-        <article class="dienst">
+        <article class="dienst" id="kozijnen-en-deuren">
           <div class="dienst-kop">
             <h3>Kozijnen &amp; deuren</h3>
             <p>Voor het vakkundig plaatsen, vervangen en afwerken van kozijnen en deuren.</p>
@@ -603,7 +606,7 @@ div.foto { display: grid; place-items: center; }
           </div>
         </article>
 
-        <article class="dienst">
+        <article class="dienst" id="buitenwerk">
           <div class="dienst-kop">
             <h3>Buitenwerk</h3>
             <p>Voor duurzaam timmerwerk buitenshuis, uitgevoerd met oog voor kwaliteit en een nette afwerking.</p>
@@ -757,11 +760,11 @@ div.foto { display: grid; place-items: center; }
       <div>
         <h4>Diensten</h4>
         <ul>
-          <li><a href="#diensten">Timmerwerk op maat</a></li>
-          <li><a href="#diensten">Houtherstel &amp; kozijnreparatie</a></li>
-          <li><a href="#diensten">Aftimmerwerk</a></li>
-          <li><a href="#diensten">Kozijnen &amp; deuren</a></li>
-          <li><a href="#diensten">Buitenwerk</a></li>
+          <li><a href="#timmerwerk-op-maat">Timmerwerk op maat</a></li>
+          <li><a href="#houtherstel-en-kozijnreparatie">Houtherstel &amp; kozijnreparatie</a></li>
+          <li><a href="#aftimmerwerk">Aftimmerwerk</a></li>
+          <li><a href="#kozijnen-en-deuren">Kozijnen &amp; deuren</a></li>
+          <li><a href="#buitenwerk">Buitenwerk</a></li>
         </ul>
       </div>
       <div>
