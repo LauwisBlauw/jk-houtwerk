@@ -787,15 +787,26 @@ div.foto { display: grid; place-items: center; }
 <script>
 /* ---------- Aangeklikte dienst markeren ---------- */
 (function () {
-  const SOORTEN = ['wheel', 'touchstart', 'keydown', 'click', 'scroll'];
+  const TOON_TIJD = 4000;   // langer dan dit blijft de markering nooit staan
   let gemarkeerd = null;
   let wachtend = null;
+  let verlopen = null;
+
+  // Het scrollen van de pagina bereikt window niet in de capture-fase, vandaar
+  // dat scroll er apart in staat: op window in de bubbelfase en op document.
+  function luister(aan) {
+    const m = aan ? 'addEventListener' : 'removeEventListener';
+    ['wheel', 'touchstart', 'keydown', 'click'].forEach((s) => document[m](s, wis, true));
+    window[m]('scroll', wis, false);
+    document[m]('scroll', wis, true);
+  }
 
   function wis() {
     if (gemarkeerd) gemarkeerd.classList.remove('gemarkeerd');
     gemarkeerd = null;
     clearTimeout(wachtend);
-    SOORTEN.forEach((s) => window.removeEventListener(s, wis, true));
+    clearTimeout(verlopen);
+    luister(false);
   }
 
   function markeer() {
@@ -806,9 +817,10 @@ div.foto { display: grid; place-items: center; }
     doel.classList.add('gemarkeerd');
     // Het aanspringen veroorzaakt zelf een scroll; pas daarna gaan we luisteren,
     // anders is de markering weg voordat iemand hem gezien heeft.
-    wachtend = setTimeout(() => {
-      SOORTEN.forEach((s) => window.addEventListener(s, wis, { passive: true, capture: true }));
-    }, 700);
+    wachtend = setTimeout(() => luister(true), 700);
+    // Staat de pagina in een ingesloten kader, dan scrolt zij zelf nooit en komt
+    // er dus ook geen scroll binnen. Daarom sowieso na een paar tellen weg.
+    verlopen = setTimeout(wis, TOON_TIJD);
   }
 
   window.addEventListener('hashchange', markeer);
