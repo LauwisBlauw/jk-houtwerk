@@ -442,6 +442,8 @@ div.foto { display: grid; place-items: center; }
    eronder. (De 4/3 hieronder hoort bij --foto-verhouding.) */
 @media (orientation: landscape) and (max-height: 560px) {
   :root { --galerij-reserve: 100px; }
+  /* Even groot als in staande stand; het past binnen de bestaande balkhoogte. */
+  .merk-beeld { height: 42px; }
   #galerij { padding-block: var(--sp-3); }
   /* De galerij is hier smal, dus de bediening moet mee inkrimpen; anders zakt
      hij naar een tweede regel en valt hij van het scherm. */
