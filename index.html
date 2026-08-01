@@ -926,23 +926,70 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
     if (foto) foto.loading = 'eager';
   }
 
+  let animatie = null;
+
+  function stopSchuiven() {
+    if (!animatie) return;
+    cancelAnimationFrame(animatie.id);
+    clearTimeout(animatie.vangnet);
+    venster.style.scrollSnapType = '';
+    animatie = null;
+  }
+
+  // Meteen op de eindstand zetten. Nodig als de animatie niet kan lopen, zoals
+  // op een tabblad op de achtergrond: daar staat requestAnimationFrame stil.
+  function voltooi() {
+    if (!animatie) return;
+    const doel = animatie.doel;
+    stopSchuiven();
+    venster.scrollLeft = doel;
+  }
+
+  // Eigen beweging in plaats van de standaard smooth-scroll van de browser: die
+  // heeft een vaste, korte curve. Deze loopt zacht op gang en remt zacht af, en
+  // duurt iets langer naarmate de afstand groter is.
+  function schuifNaar(doel, direct) {
+    stopSchuiven();
+    // Verborgen tabblad: geen animatie mogelijk, dus meteen op de plek zetten.
+    if (direct || rustig.matches || document.hidden) { venster.scrollLeft = doel; return; }
+
+    const start = venster.scrollLeft;
+    const afstand = doel - start;
+    if (Math.abs(afstand) < 1) return;
+
+    const dias = Math.abs(afstand) / Math.max(venster.clientWidth, 1);
+    const duur = Math.min(1000, 460 + dias * 110);
+    const begin = performance.now();
+    const soepel = (v) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
+
+    // Het vastklikken staat tijdens de eigen animatie uit; anders trekt de
+    // browser de foto halverwege terug naar het dichtstbijzijnde punt.
+    venster.style.scrollSnapType = 'none';
+
+    const stap = (nu) => {
+      const v = Math.min(1, (nu - begin) / duur);
+      venster.scrollLeft = start + afstand * soepel(v);
+      if (v < 1) { animatie.id = requestAnimationFrame(stap); }
+      else { venster.style.scrollSnapType = ''; animatie = null; }
+    };
+    animatie = { doel: doel, id: requestAnimationFrame(stap) };
+    // Loopt de animatie om wat voor reden dan ook niet af, dan zet dit vangnet
+    // hem alsnog goed. Zonder dit zou het vastklikken uit blijven staan.
+    animatie.vangnet = setTimeout(voltooi, duur + 400);
+  }
+
   function naar(i) {
     index = (i + items.length) % items.length;
     laadAlvast(index);
     laadAlvast(index + 1);
     // Op een verborgen tabblad is de breedte 0; dan alleen de stand bijwerken,
     // anders schuift alles naar links en klopt de teller niet meer met het beeld.
-    if (venster.clientWidth) {
-      venster.scrollTo({
-        left: index * venster.clientWidth,
-        behavior: rustig.matches ? 'auto' : 'smooth'
-      });
-    }
+    if (venster.clientWidth) schuifNaar(index * venster.clientWidth);
     werkStandBij();
   }
 
   function lijnUit() {
-    if (venster.clientWidth) venster.scrollTo({ left: index * venster.clientWidth, behavior: 'auto' });
+    if (venster.clientWidth) schuifNaar(index * venster.clientWidth, true);
   }
 
   function werkStandBij() {
@@ -961,6 +1008,7 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
   // Meelopen als iemand zelf veegt of scrollt.
   let scrollWacht;
   venster.addEventListener('scroll', () => {
+    if (animatie) return;   // tijdens de eigen beweging weten we de stand al
     clearTimeout(scrollWacht);
     scrollWacht = setTimeout(() => {
       const i = Math.round(venster.scrollLeft / venster.clientWidth);
@@ -972,10 +1020,12 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
   venster.addEventListener('mouseenter', stop);
   venster.addEventListener('mouseleave', herstart);
   venster.addEventListener('touchstart', stop, { passive: true });
+  ['pointerdown', 'wheel', 'touchstart'].forEach((s) =>
+    venster.addEventListener(s, stopSchuiven, { passive: true }));
   dia.addEventListener('focusin', stop);
   dia.addEventListener('focusout', herstart);
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { stop(); } else { lijnUit(); herstart(); }
+    if (document.hidden) { voltooi(); stop(); } else { lijnUit(); herstart(); }
   });
 
   dia.querySelector('[data-dia-vorige]').addEventListener('click', () => { naar(index - 1); herstart(); });
