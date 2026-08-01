@@ -447,8 +447,8 @@ div.foto { display: grid; place-items: center; }
 .voet-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
 .voet-grid h4 { font-size: var(--t-xs); font-family: var(--font-mono); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--balk-tekst-zacht); margin-bottom: var(--sp-2); }
 .voet-grid li { font-size: var(--t-sm); margin-bottom: 0.4rem; }
-.voet-grid a { color: var(--balk-tekst-zacht); text-decoration: none; }
-.voet-grid a:hover { color: var(--balk-tekst); text-decoration: underline; }
+.voet-grid a { color: var(--balk-tekst-zacht); text-decoration: none; transition: color .18s; }
+.voet-grid a:hover { color: var(--balk-accent); }
 .voet-over p { font-size: var(--t-sm); color: var(--balk-tekst-zacht); max-width: 34ch; margin-top: var(--sp-2); }
 .voet-onder {
   display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); justify-content: space-between;
