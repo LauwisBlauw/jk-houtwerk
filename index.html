@@ -312,8 +312,10 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
 }
 .dienst-werk li::before { content: "—"; color: var(--accent); flex: none; }
 
-/* Komt iemand via een link in de voet binnen, dan licht die dienst even op. */
-.dienst:target { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+/* Komt iemand via een link in de voet binnen, dan licht die dienst op tot de
+   bezoeker zelf iets doet. Het script hieronder haalt de markering weg. */
+.dienst { transition: background .45s ease; }
+.dienst.gemarkeerd { background: color-mix(in srgb, var(--accent) 9%, transparent); }
 
 @media (max-width: 860px) {
   .dienst { grid-template-columns: 1fr; gap: var(--sp-3); }
@@ -783,6 +785,36 @@ div.foto { display: grid; place-items: center; }
 </footer>
 
 <script>
+/* ---------- Aangeklikte dienst markeren ---------- */
+(function () {
+  const SOORTEN = ['wheel', 'touchstart', 'keydown', 'click', 'scroll'];
+  let gemarkeerd = null;
+  let wachtend = null;
+
+  function wis() {
+    if (gemarkeerd) gemarkeerd.classList.remove('gemarkeerd');
+    gemarkeerd = null;
+    clearTimeout(wachtend);
+    SOORTEN.forEach((s) => window.removeEventListener(s, wis, true));
+  }
+
+  function markeer() {
+    wis();
+    const doel = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+    if (!doel || !doel.classList.contains('dienst')) return;
+    gemarkeerd = doel;
+    doel.classList.add('gemarkeerd');
+    // Het aanspringen veroorzaakt zelf een scroll; pas daarna gaan we luisteren,
+    // anders is de markering weg voordat iemand hem gezien heeft.
+    wachtend = setTimeout(() => {
+      SOORTEN.forEach((s) => window.addEventListener(s, wis, { passive: true, capture: true }));
+    }, 700);
+  }
+
+  window.addEventListener('hashchange', markeer);
+  markeer();
+})();
+
 /* ---------- Hoogte van de opening ---------- */
 (function () {
   const ingebed = window.self !== window.top;
