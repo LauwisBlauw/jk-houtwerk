@@ -415,6 +415,24 @@ div.foto { display: grid; place-items: center; }
 .dia-knop:hover { color: var(--tekst); border-color: var(--tekst-zacht); }
 .dia-knop .icoon-start { display: none; }
 
+/* Telefoon in liggende stand: het scherm is dan laag en breed. Zou de foto de
+   volle breedte pakken, dan blijft er een strook van een kwart over. Daarom
+   wordt hij hier op hoogte ingepast: de galerij krijgt de breedte die bij de
+   beschikbare hoogte hoort, zodat de hele foto in beeld staat met de knoppen
+   eronder. (De 4/3 hieronder hoort bij --foto-verhouding.) */
+@media (orientation: landscape) and (max-height: 560px) {
+  #galerij { padding-block: var(--sp-3); }
+  .dia {
+    max-width: calc((var(--scherm-hoogte, 100svh) - var(--kop-echt, var(--kop-hoogte)) - 104px) * 4 / 3);
+  }
+  .foto { max-height: none; }
+  /* De galerij is hier smal, dus de bediening moet mee inkrimpen; anders zakt
+     hij naar een tweede regel en valt hij van het scherm. */
+  .dia-stippen { gap: 0.3rem; }
+  .dia-stip { width: 11px; }
+  .dia-teller { display: none; }
+}
+
 /* Op telefoonbreedte passen acht stippen plus de teller en de knoppen niet naast
    elkaar. Kleinere stippen, iets grotere knoppen om te tikken, en als het op een
    heel smal toestel alsnog niet past zakt de bediening naar een tweede regel. */
