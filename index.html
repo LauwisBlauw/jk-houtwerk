@@ -126,7 +126,7 @@ h1, h2, h3, h4 {
 }
 p { margin: 0; }
 a { color: var(--primair); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-a:hover { color: var(--primair-hover); }
+@media (hover: hover) { a:hover { color: var(--primair-hover); } }
 img, svg { max-width: 100%; }
 ul { margin: 0; padding: 0; list-style: none; }
 
@@ -180,11 +180,11 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
 }
 .btn:active { transform: translateY(1px); }
 .btn-accent { background: var(--accent); color: var(--accent-tekst); font-weight: 600; }
-.btn-accent:hover { background: color-mix(in srgb, var(--accent) 82%, #fff); color: var(--accent-tekst); }
+@media (hover: hover) { .btn-accent:hover { background: color-mix(in srgb, var(--accent) 82%, #fff); color: var(--accent-tekst); } }
 .btn-outline { border-color: var(--lijn); color: var(--tekst); background: transparent; }
-.btn-outline:hover { border-color: var(--tekst); color: var(--tekst); }
+@media (hover: hover) { .btn-outline:hover { border-color: var(--tekst); color: var(--tekst); } }
 .diep .btn-outline { border-color: var(--lijn-diep); color: var(--tekst-op-diep); }
-.diep .btn-outline:hover { border-color: var(--tekst-op-diep); color: var(--tekst-op-diep); }
+@media (hover: hover) { .diep .btn-outline:hover { border-color: var(--tekst-op-diep); color: var(--tekst-op-diep); } }
 
 /* ---------- 5. Kop / navigatie ---------- */
 /* De balk bovenaan is in beide standen donker, met het cremewitte logo. Daarom
@@ -219,7 +219,7 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
   color: var(--balk-tekst-zacht); text-decoration: none; padding: 0.4rem 0; position: relative;
   transition: color .18s;
 }
-.hoofdnav a:hover { color: var(--balk-accent); }
+@media (hover: hover) { .hoofdnav a:hover { color: var(--balk-accent); } }
 .hoofdnav a[aria-current="true"] { color: var(--balk-tekst); }
 .hoofdnav a[aria-current="true"]::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: var(--balk-accent);
@@ -231,7 +231,7 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
   color: var(--balk-tekst-zacht); cursor: pointer;
   transition: color .18s, border-color .18s;
 }
-.thema-knop:hover { color: var(--balk-accent); border-color: var(--balk-accent); }
+@media (hover: hover) { .thema-knop:hover { color: var(--balk-accent); border-color: var(--balk-accent); } }
 .thema-knop .icoon-maan { display: none; }
 
 /* Op een aanraakscherm bestaat hover niet, dus daar zie je het goud nooit. Een
@@ -420,7 +420,7 @@ div.foto { display: grid; place-items: center; }
   width: 24px; height: 3px; padding: 0; border: 0; border-radius: 2px;
   background: var(--lijn); cursor: pointer; transition: background .2s;
 }
-.dia-stip:hover { background: var(--tekst-zacht); }
+@media (hover: hover) { .dia-stip:hover { background: var(--tekst-zacht); } }
 .dia-stip[aria-current="true"] { background: var(--accent); }
 .dia-bediening { display: flex; align-items: center; gap: var(--sp-2); margin-left: auto; }
 .dia-teller {
@@ -432,7 +432,7 @@ div.foto { display: grid; place-items: center; }
   background: transparent; border: 1px solid var(--lijn); border-radius: var(--radius);
   color: var(--tekst-zacht); cursor: pointer;
 }
-.dia-knop:hover { color: var(--tekst); border-color: var(--tekst-zacht); }
+@media (hover: hover) { .dia-knop:hover { color: var(--tekst); border-color: var(--tekst-zacht); } }
 .dia-knop .icoon-start { display: none; }
 
 /* Telefoon in liggende stand: het scherm is dan laag en breed. Zou de foto de
@@ -505,7 +505,7 @@ div.foto { display: grid; place-items: center; }
 .voet-grid h4 { font-size: var(--t-xs); font-family: var(--font-mono); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--balk-tekst-zacht); margin-bottom: var(--sp-2); }
 .voet-grid li { font-size: var(--t-sm); margin-bottom: 0.4rem; }
 .voet-grid a { color: var(--balk-tekst-zacht); text-decoration: none; transition: color .18s; }
-.voet-grid a:hover { color: var(--balk-accent); }
+@media (hover: hover) { .voet-grid a:hover { color: var(--balk-accent); } }
 .voet-over p { font-size: var(--t-sm); color: var(--balk-tekst-zacht); max-width: 34ch; margin-top: var(--sp-2); }
 .voet-onder {
   display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); justify-content: space-between;
