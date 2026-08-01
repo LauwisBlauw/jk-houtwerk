@@ -345,6 +345,28 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
 .dia-venster::-webkit-scrollbar { display: none; }
 .dia-item { flex: 0 0 100%; scroll-snap-align: center; }
 
+/* Zodra het script draait, worden de foto's over elkaar gelegd. De nieuwe foto
+   vloeit daardoor rustig in in plaats van dat de galerij abrupt verspringt. De
+   gewone schuifgalerij hierboven blijft als nette reserve werken zonder script. */
+.dia.is-klaar .dia-venster {
+  display: grid; overflow: hidden; scroll-snap-type: none; touch-action: pan-y;
+}
+.dia.is-klaar .dia-item {
+  grid-area: 1 / 1; opacity: 0; transform: scale(1.025); z-index: 0;
+  pointer-events: none; will-change: opacity, transform;
+  transition: opacity 1.15s cubic-bezier(.22, .61, .36, 1),
+              transform 1.35s cubic-bezier(.22, .61, .36, 1);
+}
+.dia.is-klaar .dia-item.dia-actief {
+  opacity: 1; transform: scale(1); z-index: 2; pointer-events: auto;
+}
+.dia.is-klaar .dia-item.dia-verlaat {
+  opacity: 0; transform: scale(.985); z-index: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dia.is-klaar .dia-item { transition: none; transform: none; }
+}
+
 /* Dezelfde klasse werkt voor de plaatshouder én voor een echte <img>,
    zodat u een dia kunt vervangen zonder de stijl aan te passen.
    Andere beeldverhouding? Pas --foto-verhouding aan. */
@@ -471,7 +493,7 @@ div.foto { display: grid; place-items: center; }
 
 <header class="site-kop">
   <div class="wrap">
-    <a class="merk" href="#hoofd">
+    <a class="merk" href="#home">
       <!-- AANPASSEN: het logo staat hier als data-URI, zodat de site één zelfstandig
            bestand blijft. Liever een los bestand? Vervang de src door
            logo/jk-houtwerk-logo-donker.png -->
@@ -501,7 +523,7 @@ div.foto { display: grid; place-items: center; }
 <main id="hoofd">
 
   <!-- ============ OPENING ============ -->
-  <section class="hero">
+  <section class="hero" id="home">
     <div class="wrap">
       <div class="hero-grid">
         <h1>Welkom bij JK Houtwerk</h1>
@@ -898,7 +920,8 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
   const teller = document.getElementById('dia-teller');
   const pauzeKnop = dia.querySelector('[data-dia-pauze]');
   const rustig = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const WACHTTIJD = 5000;
+  // Iedere foto blijft drie seconden rustig in beeld voordat de volgende komt.
+  const WACHTTIJD = 3000;
   const nul = (n) => String(n).padStart(2, '0');
 
   let index = 0;
@@ -918,6 +941,11 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
     stippen.append(stip);
   });
 
+  // De schuifgalerij blijft de reserve zonder JavaScript. Met JavaScript
+  // leggen we de foto's over elkaar voor een zachte, rustige overgang.
+  dia.classList.add('is-klaar');
+  items[0].classList.add('dia-actief');
+
   // De foto's staan op "lazy": ze komen pas binnen als ze nodig zijn. Bij het
   // doorschuiven halen we de volgende alvast op, zodat er nooit een leeg vlak
   // in beeld komt op een trage verbinding.
@@ -926,70 +954,22 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
     if (foto) foto.loading = 'eager';
   }
 
-  let animatie = null;
-
-  function stopSchuiven() {
-    if (!animatie) return;
-    cancelAnimationFrame(animatie.id);
-    clearTimeout(animatie.vangnet);
-    venster.style.scrollSnapType = '';
-    animatie = null;
-  }
-
-  // Meteen op de eindstand zetten. Nodig als de animatie niet kan lopen, zoals
-  // op een tabblad op de achtergrond: daar staat requestAnimationFrame stil.
-  function voltooi() {
-    if (!animatie) return;
-    const doel = animatie.doel;
-    stopSchuiven();
-    venster.scrollLeft = doel;
-  }
-
-  // Eigen beweging in plaats van de standaard smooth-scroll van de browser: die
-  // heeft een vaste, korte curve. Deze loopt zacht op gang en remt zacht af, en
-  // duurt iets langer naarmate de afstand groter is.
-  function schuifNaar(doel, direct) {
-    stopSchuiven();
-    // Verborgen tabblad: geen animatie mogelijk, dus meteen op de plek zetten.
-    if (direct || rustig.matches || document.hidden) { venster.scrollLeft = doel; return; }
-
-    const start = venster.scrollLeft;
-    const afstand = doel - start;
-    if (Math.abs(afstand) < 1) return;
-
-    const dias = Math.abs(afstand) / Math.max(venster.clientWidth, 1);
-    const duur = Math.min(1000, 460 + dias * 110);
-    const begin = performance.now();
-    const soepel = (v) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
-
-    // Het vastklikken staat tijdens de eigen animatie uit; anders trekt de
-    // browser de foto halverwege terug naar het dichtstbijzijnde punt.
-    venster.style.scrollSnapType = 'none';
-
-    const stap = (nu) => {
-      const v = Math.min(1, (nu - begin) / duur);
-      venster.scrollLeft = start + afstand * soepel(v);
-      if (v < 1) { animatie.id = requestAnimationFrame(stap); }
-      else { venster.style.scrollSnapType = ''; animatie = null; }
-    };
-    animatie = { doel: doel, id: requestAnimationFrame(stap) };
-    // Loopt de animatie om wat voor reden dan ook niet af, dan zet dit vangnet
-    // hem alsnog goed. Zonder dit zou het vastklikken uit blijven staan.
-    animatie.vangnet = setTimeout(voltooi, duur + 400);
-  }
-
   function naar(i) {
-    index = (i + items.length) % items.length;
+    const volgende = (i + items.length) % items.length;
+    if (volgende === index) return;
+
+    const vorigeFoto = items[index];
+    const volgendeFoto = items[volgende];
+    vorigeFoto.classList.remove('dia-actief');
+    vorigeFoto.classList.add('dia-verlaat');
+    volgendeFoto.classList.remove('dia-verlaat');
+    volgendeFoto.classList.add('dia-actief');
+    window.setTimeout(() => vorigeFoto.classList.remove('dia-verlaat'), 1350);
+
+    index = volgende;
     laadAlvast(index);
     laadAlvast(index + 1);
-    // Op een verborgen tabblad is de breedte 0; dan alleen de stand bijwerken,
-    // anders schuift alles naar links en klopt de teller niet meer met het beeld.
-    if (venster.clientWidth) schuifNaar(index * venster.clientWidth);
     werkStandBij();
-  }
-
-  function lijnUit() {
-    if (venster.clientWidth) schuifNaar(index * venster.clientWidth, true);
   }
 
   function werkStandBij() {
@@ -1005,27 +985,27 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
   function stop() { clearInterval(timer); timer = null; }
   function herstart() { if (!gepauzeerd) start(); }
 
-  // Meelopen als iemand zelf veegt of scrollt.
-  let scrollWacht;
-  venster.addEventListener('scroll', () => {
-    if (animatie) return;   // tijdens de eigen beweging weten we de stand al
-    clearTimeout(scrollWacht);
-    scrollWacht = setTimeout(() => {
-      const i = Math.round(venster.scrollLeft / venster.clientWidth);
-      if (i !== index && i >= 0 && i < items.length) { index = i; werkStandBij(); }
-    }, 120);
+  // Ook op telefoon blijft vegen mogelijk; de gekozen foto vloeit daarna in
+  // plaats van dat het beeld tijdens het vegen hard verspringt.
+  let beginVeeg = null;
+  venster.addEventListener('pointerdown', (event) => {
+    beginVeeg = { id: event.pointerId, x: event.clientX };
   }, { passive: true });
+  venster.addEventListener('pointerup', (event) => {
+    if (!beginVeeg || beginVeeg.id !== event.pointerId) return;
+    const verschil = event.clientX - beginVeeg.x;
+    beginVeeg = null;
+    if (Math.abs(verschil) > 48) { naar(index + (verschil < 0 ? 1 : -1)); herstart(); }
+  }, { passive: true });
+  venster.addEventListener('pointercancel', () => { beginVeeg = null; }, { passive: true });
 
   // Stilzetten zolang iemand kijkt, hovert of met het toetsenbord in de galerij zit.
   venster.addEventListener('mouseenter', stop);
   venster.addEventListener('mouseleave', herstart);
-  venster.addEventListener('touchstart', stop, { passive: true });
-  ['pointerdown', 'wheel', 'touchstart'].forEach((s) =>
-    venster.addEventListener(s, stopSchuiven, { passive: true }));
   dia.addEventListener('focusin', stop);
   dia.addEventListener('focusout', herstart);
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { voltooi(); stop(); } else { lijnUit(); herstart(); }
+    if (document.hidden) stop(); else herstart();
   });
 
   dia.querySelector('[data-dia-vorige]').addEventListener('click', () => { naar(index - 1); herstart(); });
@@ -1044,9 +1024,6 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
     pauzeKnop.querySelector('.icoon-start').style.display = gepauzeerd ? 'block' : 'none';
   }
 
-  // Na het verslepen van het venster kan de stand verschuiven; opnieuw uitlijnen.
-  window.addEventListener('resize', lijnUit);
-
   rustig.addEventListener('change', () => {
     gepauzeerd = rustig.matches;
     pauzeKnop.setAttribute('aria-pressed', String(gepauzeerd));
@@ -1064,20 +1041,78 @@ document.getElementById('contactformulier').addEventListener('submit', (e) => {
 /* ---------- Actieve sectie in de navigatie ---------- */
 (function () {
   const links = [...document.querySelectorAll('.hoofdnav a')];
+  if (!links.length) return;
   const secties = links
     .map((a) => document.querySelector(a.getAttribute('href')))
     .filter(Boolean);
-  if (!('IntersectionObserver' in window) || !secties.length) return;
+  // De losse diensten staan vóór de overkoepelende sectie. Daardoor houdt een
+  // footerlink zoals #timmerwerk-op-maat zijn eigen adresbalk-link, terwijl de
+  // introductie van de diensten gewoon #diensten blijft gebruiken.
+  const hashSecties = [
+    document.getElementById('home'),
+    ...document.querySelectorAll('#diensten .dienst'),
+    document.getElementById('diensten'),
+    document.getElementById('galerij'),
+    document.getElementById('contact')
+  ].filter(Boolean);
+  let vasteFooterHash = null;
 
-  const kijker = new IntersectionObserver((rijen) => {
-    rijen.forEach((rij) => {
-      if (!rij.isIntersecting) return;
-      links.forEach((a) =>
-        a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + rij.target.id))
-      );
+  // Bij een klik in de footer laat de browser eerst rustig naar de gekozen
+  // dienst scrollen. Houd die specifieke hash intussen vast, zodat hij niet
+  // kort naar #diensten wordt teruggezet tijdens die beweging.
+  document.querySelectorAll('.site-voet a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', () => { vasteFooterHash = link.getAttribute('href'); });
+  });
+
+  function zet(sectie) {
+    links.forEach((a) =>
+      a.setAttribute('aria-current', String(!!sectie && a.getAttribute('href') === '#' + sectie.id)));
+  }
+
+  // Klikken op een menu-item onderstreept het meteen, nog voor het schuiven klaar is.
+  links.forEach((a) =>
+    a.addEventListener('click', () => zet(document.querySelector(a.getAttribute('href')))));
+
+  // In een ingesloten kader is de vensterhoogte de hele pagina; dan zegt "wat is
+  // er in beeld" niets en zou er altijd iets onderstreept staan. Daar houden we
+  // het bij het klikken.
+  if (window.self !== window.top) return;
+
+  // Onderstreept de sectie waar u doorheen scrolt. Bovenaan de pagina staat er
+  // niets onderstreept, want daar bent u nog nergens.
+  let wacht = false;
+  function bijScroll() {
+    if (wacht) return;
+    wacht = true;
+    requestAnimationFrame(() => {
+      wacht = false;
+      // Een menu-item is pas actief zodra de bijbehorende sectie onder de
+      // vaste kop doorloopt. Daardoor verdwijnt de onderstreping van
+      // "Diensten" meteen zodra u terug omhoog naar de introductie scrolt.
+      const peil = document.querySelector('.site-kop').getBoundingClientRect().bottom + 1;
+      const binnenPeil = (s) => {
+        const r = s.getBoundingClientRect();
+        return r.top <= peil && r.bottom > peil;
+      };
+      zet(secties.find(binnenPeil));
+
+      if (vasteFooterHash) {
+        const doel = document.querySelector(vasteFooterHash);
+        if (doel && !binnenPeil(doel)) return;
+        vasteFooterHash = null;
+      }
+
+      // Houd de link in de adresbalk gelijk met het deel van de pagina waar
+      // de bezoeker is. replaceState voorkomt een nieuw geschiedenisitem bij
+      // elke kleine scrollbeweging.
+      const hashSectie = hashSecties.find(binnenPeil) || hashSecties.at(-1);
+      const hash = `#${hashSectie.id}`;
+      if (window.location.hash !== hash) history.replaceState(null, '', hash);
     });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-  secties.forEach((s) => kijker.observe(s));
+  }
+  window.addEventListener('scroll', bijScroll, { passive: true });
+  window.addEventListener('resize', bijScroll, { passive: true });
+  bijScroll();
 })();
 
 /* ---------- Rustige scroll-reveal ---------- */
