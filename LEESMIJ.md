@@ -138,15 +138,39 @@ laten versturen zonder eigen server, bijvoorbeeld met Formspree:
 Netlify Forms werkt ook: dan volstaat `netlify` als attribuut op het formulier, mits u bij
 Netlify host.
 
-## Online zetten
+## Waar de site staat
 
-De site is statisch — `index.html` plus de map `fotos` — dus vrijwel elke hostingpartij kan het aan:
+De site staat op GitHub en wordt daar gratis gepubliceerd:
 
-- **Netlify of Cloudflare Pages** — de hele map naar de browser slepen, klaar.
-  Gratis, inclusief https.
-- **Eigen hosting via FTP** — `index.html` en de map `fotos` in de webmap zetten.
-- **Domein** — `jkhoutwerk.nl` registreren bij een Nederlandse registrar en bij de host
-  aanwijzen.
+| | |
+|---|---|
+| Code | https://github.com/LauwisBlauw/jk-houtwerk (openbaar) |
+| Live | https://lauwisblauw.github.io/jk-houtwerk/ |
+
+**De site is bewust niet vindbaar in Google.** In de `<head>` van `index.html` staat
+`<meta name="robots" content="noindex, nofollow">`. Wie de link heeft komt erop, maar hij duikt
+niet op in zoekresultaten. Zodra de echte gegevens erin staan en de site gevonden mag worden:
+haal die ene regel weg, commit en push.
+
+Let op: de repo is openbaar. De code én de foto's in `fotos/` zijn dus voor iedereen in te zien.
+Wilt u dat later afschermen, dan kan de repo op privé — maar dan stopt de gratis publicatie via
+GitHub Pages. Cloudflare Pages en Netlify publiceren wél gratis uit een privé-repo.
+
+### Wijzigingen doorzetten
+
+```
+git add -A
+git commit -m "korte omschrijving van de wijziging"
+git push
+```
+
+Binnen een minuut staat de nieuwe versie live.
+
+### Eigen domein
+
+Wilt u `jkhoutwerk.nl` gebruiken in plaats van het github.io-adres: registreer het domein, zet in
+de repo een bestand `CNAME` met daarin `jkhoutwerk.nl`, en wijs bij uw registrar de A-records naar
+de servers van GitHub Pages. Zeg het als u zover bent, dan zet ik het klaar.
 
 ## Nog te doen voordat klanten u kunnen vinden
 
