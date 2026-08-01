@@ -231,6 +231,16 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
 .thema-knop:hover { color: var(--balk-accent); border-color: var(--balk-accent); }
 .thema-knop .icoon-maan { display: none; }
 
+/* Op een aanraakscherm bestaat hover niet, dus daar zie je het goud nooit. Een
+   aangetikte link licht daarom kort op en gaat daarna vanzelf terug. Het script
+   onderaan zet de klasse; de kleur geldt alleen waar niet gehoverd kan worden. */
+@media (hover: none) {
+  .hoofdnav a.getikt,
+  .voet-grid a.getikt { color: var(--balk-accent); }
+  .thema-knop.getikt { color: var(--balk-accent); border-color: var(--balk-accent); }
+  .hoofdnav a, .voet-grid a, .thema-knop { -webkit-tap-highlight-color: transparent; }
+}
+
 /* Met twee menu-items is een hamburger overdreven; op smalle schermen
    zakt de navigatie gewoon naar een tweede regel. */
 @media (max-width: 560px) {
@@ -829,6 +839,19 @@ div.foto { display: grid; place-items: center; }
 </footer>
 
 <script>
+/* ---------- Kort oplichten bij een tik ---------- */
+(function () {
+  const TOON_TIJD = 600;
+  document.querySelectorAll('.hoofdnav a, .voet-grid a, [data-thema]').forEach((el) => {
+    let terug;
+    el.addEventListener('click', () => {
+      el.classList.add('getikt');
+      clearTimeout(terug);
+      terug = setTimeout(() => el.classList.remove('getikt'), TOON_TIJD);
+    });
+  });
+})();
+
 /* ---------- Aangeklikte dienst markeren ---------- */
 (function () {
   const TOON_TIJD = 4000;   // langer dan dit blijft de markering nooit staan
