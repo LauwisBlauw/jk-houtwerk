@@ -234,7 +234,7 @@ section, #hoofd, .dienst { scroll-margin-top: calc(var(--kop-echt, var(--kop-hoo
 /* Op een aanraakscherm bestaat hover niet, dus daar zie je het goud nooit. Een
    aangetikte link licht daarom kort op en gaat daarna vanzelf terug. Het script
    onderaan zet de klasse; de kleur geldt alleen waar niet gehoverd kan worden. */
-@media (hover: none) {
+@media (hover: none), (pointer: coarse) {
   .hoofdnav a.getikt,
   .voet-grid a.getikt { color: var(--balk-accent); }
   .thema-knop.getikt { color: var(--balk-accent); border-color: var(--balk-accent); }
