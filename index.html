@@ -530,6 +530,16 @@ div.foto { display: grid; place-items: center; }
 .veld textarea { min-height: 118px; resize: vertical; }
 .veld input:focus, .veld select:focus, .veld textarea:focus { border-color: var(--accent); outline: none; }
 .veld input:user-invalid, .veld textarea:user-invalid { border-color: #C4553F; }
+/* Na drie tellen dooft de rode omlijning mee met de melding. Hij komt terug
+   zodra de bezoeker weer typt of opnieuw op Versturen klikt. Een veld waar de
+   cursor in staat houdt zijn accentrand. */
+.formulier.fouten-gedoofd .veld input:user-invalid,
+.formulier.fouten-gedoofd .veld textarea:user-invalid { border-color: var(--lijn-diep); }
+.formulier.fouten-gedoofd .veld input:user-invalid:focus,
+.formulier.fouten-gedoofd .veld textarea:user-invalid:focus { border-color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .veld input, .veld textarea { transition: border-color .4s ease; }
+}
 .formulier-voet { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); }
 .formulier-melding {
   grid-column: 1 / -1; border: 1px dashed var(--accent); color: var(--tekst-op-diep);
@@ -1020,12 +1030,13 @@ div.foto { display: grid; place-items: center; }
   const knop = form.querySelector('button[type="submit"]');
   const knopTekst = knop.textContent;
 
-  let verbergTimer, wegTimer;
+  let verbergTimer, wegTimer, doofTimer;
 
   /* verbergNa: milliseconden waarna de melding weer verdwijnt (0 = blijft staan). */
   const toon = (tekst, soort, verbergNa = 0) => {
     clearTimeout(verbergTimer);
     clearTimeout(wegTimer);
+    clearTimeout(doofTimer);
     melding.hidden = false;
     melding.className = soort ? 'formulier-melding ' + soort : 'formulier-melding';
     melding.innerHTML = tekst;
@@ -1044,7 +1055,10 @@ div.foto { display: grid; place-items: center; }
     e.preventDefault();
 
     if (!form.checkValidity()) {
+      form.classList.remove('fouten-gedoofd');
       toon('Vul uw naam, e-mailadres en uw vraag of klus in.', 'is-fout', 3000);
+      /* De rode randen doven tegelijk met de melding. */
+      doofTimer = setTimeout(() => form.classList.add('fouten-gedoofd'), 3000);
       form.querySelector(':invalid')?.focus();
       return;
     }
@@ -1072,6 +1086,12 @@ div.foto { display: grid; place-items: center; }
       knop.disabled = false;
       knop.textContent = knopTekst;
     }
+  });
+
+  /* Typt de bezoeker weer, dan mag de rode omlijning meteen terugkomen. */
+  form.addEventListener('input', () => {
+    clearTimeout(doofTimer);
+    form.classList.remove('fouten-gedoofd');
   });
 })();
 
