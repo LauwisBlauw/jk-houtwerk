@@ -491,6 +491,11 @@ div.foto { display: grid; place-items: center; }
 .formulier-melding a { color: var(--accent); }
 .formulier-melding.is-goed { border-style: solid; }
 .formulier-melding.is-fout { border-style: solid; border-color: #C4553F; }
+/* De bevestiging verdwijnt na een paar tellen; deze klasse vervaagt hem eerst. */
+.formulier-melding.is-weg { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .formulier-melding { transition: opacity .4s ease; }
+}
 /* Spamval: staat in het formulier, maar is voor bezoekers onzichtbaar. */
 .honeypot { display: none; }
 
@@ -965,10 +970,24 @@ div.foto { display: grid; place-items: center; }
   const knop = form.querySelector('button[type="submit"]');
   const knopTekst = knop.textContent;
 
-  const toon = (tekst, soort) => {
+  let verbergTimer, wegTimer;
+
+  /* verbergNa: milliseconden waarna de melding weer verdwijnt (0 = blijft staan). */
+  const toon = (tekst, soort, verbergNa = 0) => {
+    clearTimeout(verbergTimer);
+    clearTimeout(wegTimer);
     melding.hidden = false;
     melding.className = soort ? 'formulier-melding ' + soort : 'formulier-melding';
     melding.innerHTML = tekst;
+
+    if (!verbergNa) return;
+    verbergTimer = setTimeout(() => {
+      melding.classList.add('is-weg');
+      wegTimer = setTimeout(() => {
+        melding.hidden = true;
+        melding.classList.remove('is-weg');
+      }, 400);
+    }, verbergNa);
   };
 
   form.addEventListener('submit', async (e) => {
@@ -995,7 +1014,7 @@ div.foto { display: grid; place-items: center; }
       if (!antwoord.ok || !uitslag.success) throw new Error(uitslag.message || 'Versturen mislukt');
 
       form.reset();
-      toon('Bedankt, uw bericht is verstuurd. We nemen zo snel mogelijk contact met u op.', 'is-goed');
+      toon('Bedankt, uw bericht is verstuurd. We nemen zo snel mogelijk contact met u op.', 'is-goed', 3000);
     } catch {
       toon('Het versturen is helaas niet gelukt. Probeer het zo nog eens, of mail rechtstreeks naar ' +
            '<a href="mailto:info@jkhoutwerk.nl">info@jkhoutwerk.nl</a>.', 'is-fout');
