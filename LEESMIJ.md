@@ -56,9 +56,13 @@ staat: cremewitte letters met een gouden nerf. Hun kleuren staan als `--balk-*` 
 wisselen bewust niet mee met de lichte of donkere modus; de secties ertussen doen dat wel. Zo
 krijgt de pagina in de lichte modus een donkere kop en voet, met krijtwit ertussen.
 
-Het logo staat op beide plekken als data-URI in `index.html`, zodat de site één zelfstandig
-bestand blijft en het logo ook meekomt in een gedeelde link. Liever een los bestand? Zoek op
-`merk-beeld` en vervang de `src`-en door `logo/jk-houtwerk-logo-donker.png`.
+Het logo stond eerst twee keer als data-URI in `index.html`, zodat dat bestand op zichzelf kon
+staan. Dat woog 114 KB van de 173 KB. Nu verwijzen de kop, de voet én `privacy.html` alle drie
+naar `logo/jk-houtwerk-logo-donker.png`: `index.html` is nog 59 KB en de browser haalt het logo
+één keer op voor de hele site. Zoek op `merk-beeld` als u de verwijzingen wilt zien.
+
+Gevolg: `index.html` is niet langer los door te sturen — zonder de map `logo` ernaast blijft het
+logo leeg.
 
 `jk-houtwerk-logo-licht.png` gebruikt de site zelf niet meer, maar dat bestand is bewaard: die
 heeft u nodig zodra het logo op een witte ondergrond moet, bijvoorbeeld op briefpapier of een
