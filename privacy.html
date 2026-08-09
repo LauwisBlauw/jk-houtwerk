@@ -86,7 +86,6 @@ ul { margin: 0; }
 @media (max-width: 560px) and (orientation: portrait) { .merk-beeld { height: 42px; } }
 @media (min-width: 1100px) { :root { --kop-hoogte: 92px; } .merk-beeld { height: 54px; } }
 @media (orientation: landscape) and (max-height: 560px) { .merk-beeld { height: 42px; } }
-@media (max-width: 560px) { .site-kop .wrap { gap: var(--sp-2); } .merk { margin-right: auto; } }
 .terug { margin-left: auto; font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: 0.08em;
          text-transform: uppercase; color: var(--balk-tekst-zacht); text-decoration: none; transition: color .18s; }
 .thema-knop {
@@ -99,6 +98,21 @@ ul { margin: 0; }
   .thema-knop:hover { color: var(--balk-accent); border-color: var(--balk-accent); }
 }
 .thema-knop .icoon-maan { display: none; }
+
+/* Op een smal scherm zakt op de hoofdpagina het menu naar een tweede regel, en
+   staat het logo daardoor bovenaan in een hogere balk. De terugkeerlink neemt
+   hier de plaats van dat menu in, zodat het logo op beide pagina's op precies
+   dezelfde plek staat. */
+@media (max-width: 560px) {
+  .site-kop .wrap { flex-wrap: wrap; gap: var(--sp-2); padding-bottom: 0; }
+  .merk { margin-right: auto; }
+  .thema-knop { order: 2; width: 44px; height: 44px; }
+  .terug {
+    order: 3; width: 100%; margin-left: 0;
+    border-top: 1px solid var(--balk-lijn);
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+}
 
 /* ---------- De tekst ---------- */
 main { padding-block: var(--sp-7); }
