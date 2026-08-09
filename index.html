@@ -1154,6 +1154,21 @@ div.foto { display: grid; place-items: center; }
     clearTimeout(doofTimer);
     form.classList.remove('fouten-gedoofd');
   });
+
+  /* Springt de bezoeker via het menu, de voet of het logo naar een ander deel van
+     de site, dan gaat de foutmelding met de rode randen weg. Wat hij al had
+     ingetypt blijft staan: hij kan naar de galerij kijken en verdergaan waar hij
+     gebleven was. */
+  const wisFouten = () => {
+    clearTimeout(verbergTimer);
+    clearTimeout(wegTimer);
+    clearTimeout(doofTimer);
+    melding.hidden = true;
+    melding.classList.remove('is-weg');
+    form.classList.add('fouten-gedoofd');
+  };
+  document.querySelectorAll('.hoofdnav a, .voet-grid a, .merk, .skip')
+    .forEach((el) => el.addEventListener('click', wisFouten));
 })();
 
 /* ---------- Schuifgalerij ---------- */
