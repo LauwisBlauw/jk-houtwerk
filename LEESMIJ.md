@@ -100,9 +100,17 @@ Wilt u een andere beeldverhouding voor de foto's? Pas `--foto-verhouding` aan in
 
 ## De foto's
 
-In de map `fotos` staan uw originelen (`IMG_….jpg`, elk 2 tot 4 MB) én de versies die de site
-gebruikt: bijgesneden op 4:3, 1300 px breed en teruggebracht tot 80 tot 300 KB per stuk. Zulke
-telefoonfoto's van 4 MB rechtstreeks op een site zetten maakt hem traag op mobiel, vandaar.
+In de map `fotos` staan de acht versies die de site gebruikt: bijgesneden op 4:3, 1300 px breed en
+teruggebracht tot 80 tot 300 KB per stuk. Zulke telefoonfoto's van 4 MB rechtstreeks op een site
+zetten maakt hem traag op mobiel, vandaar.
+
+De originelen (`IMG_….jpg`, samen 22 MB) stonden hier ook, maar zijn op 9 augustus 2026
+weggehaald: ze werden nergens getoond en de repo is openbaar. Ze staan nog wel in de
+geschiedenis van git, dus terughalen kan:
+
+```
+git checkout 4f81c5c -- fotos/IMG_5374.jpg
+```
 
 De namen zeggen wat erop staat (`gevel-rieten-kap-kozijnen.jpg`, `inbouwkast-op-maat.jpg`) — dat
 helpt bij Google.
