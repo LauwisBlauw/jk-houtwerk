@@ -1044,7 +1044,7 @@ div.foto { display: grid; place-items: center; }
     e.preventDefault();
 
     if (!form.checkValidity()) {
-      toon('Vul uw naam, e-mailadres en uw vraag of klus in.', 'is-fout');
+      toon('Vul uw naam, e-mailadres en uw vraag of klus in.', 'is-fout', 3000);
       form.querySelector(':invalid')?.focus();
       return;
     }
