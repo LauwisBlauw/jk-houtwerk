@@ -1,4 +1,4 @@
-# JK Houtwerk — voorbeeldwebsite
+# JK Houtwerk — website
 
 `index.html` is de hele website: één bestand, met alle stijl en scripts erin. Dubbelklik het
 bestand om het in de browser te openen — er is geen server, build-stap of internetverbinding nodig.
@@ -11,6 +11,16 @@ bestand om het in de browser te openen — er is geen server, build-stap of inte
 | Diensten | Vijf diensten als rijen: links de omschrijving, rechts de werkzaamheden |
 | Galerij | Schuifgalerij: één foto in beeld, schuift elke 5 seconden door |
 | Contact | Formulier waarin klanten hun gegevens en hun vraag of klus achterlaten, met e-mailadres en werkgebied ernaast |
+
+De privacyverklaring staat op een eigen pagina, `privacy.html`, bereikbaar via de voettekst. Ook
+die pagina is zelfstandig: eigen stijl, geen gedeelde bestanden. Wijzigt u de kleuren in
+`index.html`, pas ze dan ook bovenin `privacy.html` aan — daar staat dezelfde `:root` in het
+klein.
+
+Het tabbladicoon staat in `logo/favicon.svg`, met `favicon-32.png` en `apple-touch-icon.png` als
+terugval. Het merk uit uw logo is daarvoor nagetekend: een verkleinde foto wordt op 16 pixels een
+streperige brij. In `logo/deelvoorbeeld.jpg` staat het beeld dat WhatsApp en LinkedIn tonen bij een
+gedeelde link.
 
 ## Kleuren
 
@@ -114,29 +124,24 @@ haalt telkens de volgende alvast op. Zo begint de pagina snel en ziet u toch noo
 
 Zoek in `index.html` op **`AANPASSEN`** — daar staat bij elk stuk wat er nog nodig is. In het kort:
 
-1. **Contactgegevens** — e-mailadres (op twee plekken: het contactblok en de voet), KvK- en
-   btw-nummer. Het werkgebied staat al goed: Utrecht, Gooi en Vechtstreek.
-2. **Meer foto's in de galerij** — er staan er nu acht in. Een foto toevoegen is één regel in
+1. **Meer foto's in de galerij** — er staan er nu acht in. Een foto toevoegen is één regel in
    `index.html` (zoek op `dia-item`), en de stippen en de teller tellen vanzelf mee.
    Zet de `alt`-tekst goed: dat is wat blinde bezoekers en Google te zien krijgen.
-3. **Dienstteksten** — deze staan er zoals u ze aanleverde. Wilt u een dienst toevoegen of een
+2. **Dienstteksten** — deze staan er zoals u ze aanleverde. Wilt u een dienst toevoegen of een
    werkzaamheid schrappen, zoek dan op `class="dienst"`.
-4. **Losse eindjes** — de opening staat in de ik-vorm, de diensten- en contactteksten nog in
+3. **Losse eindjes** — de opening staat in de ik-vorm, de diensten- en contactteksten nog in
    de wij-vorm. Zeg het als u dat gelijk wilt trekken.
 
-## Het formulier laten werken
+## Het formulier
 
-Het formulier controleert nu alleen de invoer en zegt dat het een voorbeeld is. Om het echt te
-laten versturen zonder eigen server, bijvoorbeeld met Formspree:
+Het formulier verstuurt echt. Het gaat via **Web3Forms** naar `info@jkhoutwerk.nl`; het account
+staat op datzelfde adres. De bezoeker blijft op de pagina: de knop gaat op slot tijdens het
+versturen, daarna verschijnt een bevestiging die na drie seconden vervaagt. Gaat er iets mis, dan
+komt het e-mailadres als terugvaloptie in beeld — die melding blijft wél staan.
 
-1. Maak een gratis formulier aan en kopieer het endpoint.
-2. Zet dat op het `<form>`-element:
-   `<form class="formulier" id="contactformulier" action="https://formspree.io/f/UWCODE" method="post">`
-3. Verwijder het script-blok `/* ---------- Voorbeeldformulier ---------- */` onderaan, zodat de
-   browser het formulier gewoon verstuurt.
-
-Netlify Forms werkt ook: dan volstaat `netlify` als attribuut op het formulier, mits u bij
-Netlify host.
+De toegangssleutel staat gewoon zichtbaar in `index.html`. Dat hoort zo: hij kan alleen mail naar
+uw eigen adres sturen, niets anders. Een verborgen veld (`botcheck`) vangt spambots af. Wordt het
+ooit toch vervelend, vraag dan bij Web3Forms een nieuwe sleutel aan en vervang die ene regel.
 
 ## Waar de site staat
 
@@ -145,12 +150,11 @@ De site staat op GitHub en wordt daar gratis gepubliceerd:
 | | |
 |---|---|
 | Code | https://github.com/LauwisBlauw/jk-houtwerk (openbaar) |
-| Live | https://lauwisblauw.github.io/jk-houtwerk/ |
+| Live | https://www.jkhoutwerk.nl |
 
-**De site is bewust niet vindbaar in Google.** In de `<head>` van `index.html` staat
-`<meta name="robots" content="noindex, nofollow">`. Wie de link heeft komt erop, maar hij duikt
-niet op in zoekresultaten. Zodra de echte gegevens erin staan en de site gevonden mag worden:
-haal die ene regel weg, commit en push.
+De site mag sinds 9 augustus 2026 door zoekmachines gevonden worden; de `noindex`-regel is eruit.
+Er staan nu ook een `robots.txt` en een `sitemap.xml` in de repo, en in de `<head>` staan de
+bedrijfsgegevens als JSON-LD zodat Google ze direct begrijpt.
 
 Let op: de repo is openbaar. De code én de foto's in `fotos/` zijn dus voor iedereen in te zien.
 Wilt u dat later afschermen, dan kan de repo op privé — maar dan stopt de gratis publicatie via
@@ -166,21 +170,28 @@ git push
 
 Binnen een minuut staat de nieuwe versie live.
 
-### Eigen domein
+### Het domein
 
-Wilt u `jkhoutwerk.nl` gebruiken in plaats van het github.io-adres: registreer het domein, zet in
-de repo een bestand `CNAME` met daarin `jkhoutwerk.nl`, en wijs bij uw registrar de A-records naar
-de servers van GitHub Pages. Zeg het als u zover bent, dan zet ik het klaar.
+De site staat op **www.jkhoutwerk.nl**, met een geldig certificaat; `http` en het adres zonder
+`www` sturen daar automatisch heen. Het domein staat bij TransIP: `www` wijst met een CNAME naar
+`lauwisblauw.github.io`, en het domein zelf met A- en AAAA-records naar GitHub. De MX-, SPF-,
+DKIM- en DMARC-records zijn van uw e-mail — daar moet u bij DNS-werk vanaf blijven.
+
+Let op: verloopt de domeinnaam bij TransIP, dan valt de site om. Zorg dat de automatische
+verlenging aanstaat.
 
 ## Nog te doen voordat klanten u kunnen vinden
 
 - **Google Bedrijfsprofiel** aanmaken — voor een lokaal timmerbedrijf levert dat meestal meer
-  aanvragen op dan de website zelf.
+  aanvragen op dan de website zelf. Hiermee staat u in Google Maps en in het blok met bedrijven
+  bovenaan de zoekresultaten.
+- **Google Search Console** — daarmee weet Google dat de site bestaat, in plaats van te wachten
+  tot hij hem toevallig tegenkomt. U meldt zich aan, krijgt een code, en die zetten we als
+  TXT-record bij TransIP.
 - **`<meta name="description">`** in de `<head>` staat al op uw werkgebied; pas hem aan als uw
   diensten veranderen.
-- **Privacyverklaring** toevoegen zodra het formulier echt gegevens ontvangt.
-- **Favicon** toevoegen: een klein `favicon.png` en een regel
-  `<link rel="icon" href="favicon.png">` in de `<head>`.
+- **Bewaartermijn in de privacyverklaring** — die staat nu op twee jaar na het laatste contact.
+  Klopt dat niet met hoe u werkt, dan is het één zin aanpassen (zoek op `AANPASSEN` bij `privacy`).
 
 ## Later uitbreiden
 

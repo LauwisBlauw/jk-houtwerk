@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacyverklaring — JK Houtwerk</title>
+<link rel="canonical" href="https://www.jkhoutwerk.nl/privacy.html">
+<meta name="description" content="Privacyverklaring van JK Houtwerk: welke gegevens het contactformulier verwerkt, waarvoor, hoe lang ze bewaard blijven en welke rechten u heeft.">
+<link rel="icon" href="logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="logo/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="logo/apple-touch-icon.png">
+<meta name="theme-color" content="#14120F">
+<style>
+/* =========================================================
+   JK Houtwerk — privacyverklaring
+   Losse pagina, zelfstandig net als index.html. Alleen de stijl die een
+   tekstpagina nodig heeft: de tokens, de balk boven en onder, en typografie.
+   De kleuren zijn letterlijk die van index.html; wijzigt u ze daar, pas ze
+   dan hier ook aan.
+   ========================================================= */
+
+:root {
+  --bg:            #F1F0EC;
+  --tekst:         #1A1917;
+  --tekst-zacht:   #5C5C55;
+  --lijn:          #D9D7D0;
+  --primair:       #4A5B41;
+  --accent:        #C9962B;
+
+  --balk-bg:          #14120F;
+  --balk-lijn:        #33352C;
+  --balk-tekst-zacht: #A5A797;
+  --balk-accent:      #C9962B;
+
+  --font-kop: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --font-tekst: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --t-xs: 0.78rem; --t-sm: 0.9rem; --t-base: 1.0rem; --t-lg: 1.15rem; --t-3xl: 2.5rem;
+  --sp-2: 0.75rem; --sp-3: 1.125rem; --sp-4: 1.75rem; --sp-5: 2.75rem; --sp-7: 6.5rem;
+  --radius: 3px; --maxw: 1160px; --kop-hoogte: 68px;
+
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#16150F; --tekst:#EDEBE3; --tekst-zacht:#A8AA9B;
+  --lijn:#33352C; --primair:#8FA37F; --accent:#DDA945;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:#F1F0EC; --tekst:#1A1917; --tekst-zacht:#5C5C55;
+  --lijn:#D9D7D0; --primair:#4A5B41; --accent:#C9962B;
+}
+@media (min-width: 900px) { :root { --kop-hoogte: 92px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--balk-bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--tekst);
+  font-family: var(--font-tekst); font-size: var(--t-base); line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2 { font-family: var(--font-kop); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin: 0; }
+ul { margin: 0; }
+
+.wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(1.15rem, 4vw, 2.5rem); }
+
+/* ---------- Balk boven ---------- */
+.site-kop { position: sticky; top: 0; z-index: 40; background: var(--balk-bg); border-bottom: 1px solid var(--balk-lijn); }
+.site-kop .wrap { display: flex; align-items: center; gap: var(--sp-4); min-height: var(--kop-hoogte); }
+.merk { display: inline-flex; text-decoration: none; }
+.merk-beeld { display: block; height: 34px; width: auto; }
+@media (max-width: 560px) { .merk-beeld { height: 27px; } }
+@media (max-width: 560px) and (orientation: portrait) { .merk-beeld { height: 42px; } }
+.terug { margin-left: auto; font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: 0.08em;
+         text-transform: uppercase; color: var(--balk-tekst-zacht); text-decoration: none; transition: color .18s; }
+.thema-knop {
+  width: 36px; height: 36px; flex: none; display: grid; place-items: center;
+  background: transparent; border: 1px solid var(--balk-lijn); border-radius: var(--radius);
+  color: var(--balk-tekst-zacht); cursor: pointer; transition: color .18s, border-color .18s;
+}
+@media (hover: hover) {
+  .terug:hover { color: var(--balk-accent); }
+  .thema-knop:hover { color: var(--balk-accent); border-color: var(--balk-accent); }
+}
+.thema-knop .icoon-maan { display: none; }
+
+/* ---------- De tekst ---------- */
+main { padding-block: var(--sp-7); }
+.eyebrow {
+  font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--tekst-zacht); display: flex; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-3);
+}
+.eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--accent); flex: none; }
+h1 { font-size: var(--t-3xl); max-width: 20ch; }
+.privacy-tekst { max-width: 62ch; margin-top: var(--sp-4); display: grid; gap: var(--sp-3); }
+.privacy-tekst h2 { font-size: var(--t-base); font-family: var(--font-kop); margin-top: var(--sp-3); }
+.privacy-tekst p, .privacy-tekst li { font-size: var(--t-sm); color: var(--tekst-zacht); margin: 0; }
+.privacy-tekst ul { padding-left: 1.1rem; display: grid; gap: 0.35rem; }
+.privacy-tekst a { color: var(--primair); }
+
+/* ---------- Balk onder ---------- */
+.site-voet { background: var(--balk-bg); color: var(--balk-tekst-zacht); border-top: 1px solid var(--balk-lijn); padding-block: var(--sp-5) var(--sp-4); }
+.voet-onder {
+  display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); justify-content: space-between;
+  padding-top: var(--sp-3); border-top: 1px solid var(--balk-lijn);
+  font-family: var(--font-mono); font-size: var(--t-xs); color: var(--balk-tekst-zacht);
+}
+.voet-terug { font-size: var(--t-sm); }
+.voet-terug a { color: var(--balk-tekst-zacht); text-decoration: none; transition: color .18s; }
+@media (hover: hover) { .voet-terug a:hover { color: var(--balk-accent); } }
+</style>
+</head>
+<body>
+
+<header class="site-kop">
+  <div class="wrap">
+    <a class="merk" href="index.html">
+      <img class="merk-beeld" src="logo/jk-houtwerk-logo-donker.png" width="512" height="107"
+           alt="JK Houtwerk — timmerwerk, maatwerk, houtherstel">
+    </a>
+    <a class="terug" href="index.html">Terug naar de site</a>
+    <button class="thema-knop" type="button" data-thema aria-label="Wissel tussen licht en donker">
+      <svg class="icoon-zon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/>
+      </svg>
+      <svg class="icoon-maan" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="eyebrow">Privacy</p>
+    <h1>Privacyverklaring</h1>
+
+    <!-- AANPASSEN: bewaartermijn hieronder. Nu twee jaar na het laatste contact;
+         verander dat als u er anders mee omgaat. -->
+    <div class="privacy-tekst">
+      <h2>Wie uw gegevens verwerkt</h2>
+      <p>JK Houtwerk, handelsnaam van Jordi Koolen Renovatie en Onderhoud, ingeschreven bij de
+      Kamer van Koophandel onder nummer 85750573. Bereikbaar via
+      <a href="mailto:info@jkhoutwerk.nl">info@jkhoutwerk.nl</a>.</p>
+
+      <h2>Welke gegevens, en waarvoor</h2>
+      <p>Vult u het contactformulier in, dan ontvangen wij uw naam, uw e-mailadres en uw vraag of
+      klus. Uw telefoonnummer en woonplaats ontvangen wij alleen als u die zelf invult. Wij
+      gebruiken deze gegevens uitsluitend om op uw aanvraag te reageren en zo nodig een afspraak
+      te maken. De grondslag daarvoor is de uitvoering van of de voorbereiding op een
+      overeenkomst.</p>
+      <p>Wij gebruiken uw gegevens niet voor reclame en verkopen ze niet aan anderen.</p>
+
+      <h2>Wie ze verder onder ogen krijgt</h2>
+      <p>Voor het afleveren van het formulier en het bewaren van de e-mail schakelen wij twee
+      partijen in:</p>
+      <ul>
+        <li>Web3Forms verzorgt het versturen van het ingevulde formulier</li>
+        <li>TransIP levert de mailbox waarin uw bericht binnenkomt</li>
+      </ul>
+      <p>Verder geven wij niets door, tenzij de wet ons daartoe verplicht.</p>
+
+      <h2>Hoe lang wij ze bewaren</h2>
+      <p>Wij bewaren uw bericht tot twee jaar na ons laatste contact, zodat wij bij een
+      vervolgvraag weten wat er eerder is besproken. Daarna verwijderen wij het. Leidt uw aanvraag
+      tot een opdracht, dan gelden voor de administratie de wettelijke bewaartermijnen van de
+      Belastingdienst.</p>
+
+      <h2>Cookies en meekijken</h2>
+      <p>Deze website plaatst geen cookies, houdt geen bezoekstatistieken bij en laadt niets van
+      externe partijen. Er wordt pas verbinding met een andere partij gemaakt op het moment dat u
+      zelf op Versturen klikt.</p>
+
+      <h2>Uw rechten</h2>
+      <p>U mag opvragen welke gegevens wij van u hebben, ze laten corrigeren of laten verwijderen,
+      en bezwaar maken tegen het gebruik ervan. Een mailtje naar
+      <a href="mailto:info@jkhoutwerk.nl">info@jkhoutwerk.nl</a> volstaat; wij reageren binnen
+      vier weken. Komt u er met ons niet uit, dan kunt u een klacht indienen bij de Autoriteit
+      Persoonsgegevens.</p>
+
+      <p>Deze verklaring is voor het laatst bijgewerkt op 9 augustus 2026.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-voet">
+  <div class="wrap">
+    <p class="voet-terug"><a href="index.html">← Terug naar JK Houtwerk</a></p>
+    <div class="voet-onder">
+      <span>© <span id="jaar">2026</span> JK Houtwerk · KvK 85750573 · BTW NL004140207B81</span>
+      <span>JK Houtwerk is een handelsnaam van Jordi Koolen Renovatie en Onderhoud</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- Themawissel ---------- */
+(function () {
+  const knop = document.querySelector('[data-thema]');
+  const zon = knop.querySelector('.icoon-zon');
+  const maan = knop.querySelector('.icoon-maan');
+  const isDonker = () => document.documentElement.dataset.theme === 'dark';
+  function toonIcoon() {
+    zon.style.display = isDonker() ? 'none' : 'block';
+    maan.style.display = isDonker() ? 'block' : 'none';
+  }
+  knop.addEventListener('click', () => {
+    document.documentElement.dataset.theme = isDonker() ? 'light' : 'dark';
+    toonIcoon();
+  });
+  toonIcoon();
+})();
+
+/* ---------- Jaartal ---------- */
+document.getElementById('jaar').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
