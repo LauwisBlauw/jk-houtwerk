@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="JK Houtwerk">
+  <rect width="32" height="32" rx="5" fill="#14120F"/>
+  <g fill="none" stroke="#C9962B" stroke-width="1.7" stroke-linecap="round">
+    <path d="M7 6.5v19"/>
+    <path d="M11.5 6.5v19"/>
+    <path d="M17 6.5c-1.5 4.5-1.5 14.5 0 19"/>
+    <path d="M27 7.5c-2.2 4.5-2.2 12.5 0 17"/>
+    <ellipse cx="21.4" cy="16" rx="1.6" ry="2.9"/>
+  </g>
+</svg>
