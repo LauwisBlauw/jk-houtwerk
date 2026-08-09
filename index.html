@@ -485,6 +485,11 @@ div.foto { display: grid; place-items: center; }
 }
 .formulier-melding[hidden] { display: none; }
 .formulier-melding code { font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); }
+.formulier-melding a { color: var(--accent); }
+.formulier-melding.is-goed { border-style: solid; }
+.formulier-melding.is-fout { border-style: solid; border-color: #C4553F; }
+/* Spamval: staat in het formulier, maar is voor bezoekers onzichtbaar. */
+.honeypot { display: none; }
 
 .contact-kaart { border: 1px solid var(--lijn-diep); background: var(--diep-elev); padding: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-3); }
 .contact-rij { display: flex; flex-direction: column; gap: 0.2rem; }
@@ -761,7 +766,12 @@ div.foto { display: grid; place-items: center; }
       </div>
 
       <div class="contact-grid">
-        <form class="formulier reveal" id="contactformulier" novalidate>
+        <form class="formulier reveal" id="contactformulier" novalidate
+              action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="e82f25df-9f04-4255-8c34-a323328685f2">
+          <input type="hidden" name="subject" value="Nieuwe aanvraag via jkhoutwerk.nl">
+          <input type="hidden" name="from_name" value="JK Houtwerk website">
+          <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" autocomplete="off">
           <div class="veld">
             <label for="naam">Naam</label>
             <input id="naam" name="naam" type="text" autocomplete="name" required>
@@ -944,23 +954,54 @@ div.foto { display: grid; place-items: center; }
   toonIcoon();
 })();
 
-/* ---------- Voorbeeldformulier ---------- */
-document.getElementById('contactformulier').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const form = e.target;
+/* ---------- Contactformulier ---------- */
+/* Verstuurt via Web3Forms, zodat de bezoeker op de pagina blijft. */
+(() => {
+  const form = document.getElementById('contactformulier');
   const melding = document.getElementById('formulier-melding');
-  if (!form.checkValidity()) {
+  const knop = form.querySelector('button[type="submit"]');
+  const knopTekst = knop.textContent;
+
+  const toon = (tekst, soort) => {
     melding.hidden = false;
-    melding.innerHTML = 'Vul uw naam, e-mailadres en uw vraag of klus in.';
-    form.querySelector(':invalid')?.focus();
-    return;
-  }
-  melding.hidden = false;
-  melding.innerHTML =
-    'Dit is een voorbeeldformulier — er wordt nog niets verstuurd. ' +
-    'Koppel het aan een formulierdienst (bijvoorbeeld Formspree of Netlify Forms) door ' +
-    '<code>action</code> en <code>method="post"</code> aan het formulier toe te voegen.';
-});
+    melding.className = soort ? 'formulier-melding ' + soort : 'formulier-melding';
+    melding.innerHTML = tekst;
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!form.checkValidity()) {
+      toon('Vul uw naam, e-mailadres en uw vraag of klus in.', 'is-fout');
+      form.querySelector(':invalid')?.focus();
+      return;
+    }
+
+    knop.disabled = true;
+    knop.textContent = 'Versturen…';
+    toon('Bezig met versturen…');
+
+    try {
+      const antwoord = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+      const uitslag = await antwoord.json().catch(() => ({}));
+
+      if (!antwoord.ok || !uitslag.success) throw new Error(uitslag.message || 'Versturen mislukt');
+
+      form.reset();
+      toon('Bedankt, uw bericht is verstuurd. We nemen zo snel mogelijk contact met u op.', 'is-goed');
+    } catch {
+      toon('Het versturen is helaas niet gelukt. Probeer het zo nog eens, of mail rechtstreeks naar ' +
+           '<a href="mailto:info@jkhoutwerk.nl">info@jkhoutwerk.nl</a>.', 'is-fout');
+    } finally {
+      knop.disabled = false;
+      knop.textContent = knopTekst;
+    }
+  });
+})();
 
 /* ---------- Schuifgalerij ---------- */
 (function () {
