@@ -43,6 +43,15 @@
 
   color-scheme: light;
 }
+/* Net als de hoofdpagina: standaard de instelling van het apparaat volgen,
+   en de eigen keuze van de bezoeker wint daarvan. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg:#16150F; --tekst:#EDEBE3; --tekst-zacht:#A8AA9B;
+    --lijn:#33352C; --primair:#8FA37F; --accent:#DDA945;
+  }
+}
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg:#16150F; --tekst:#EDEBE3; --tekst-zacht:#A8AA9B;
@@ -53,7 +62,6 @@
   --bg:#F1F0EC; --tekst:#1A1917; --tekst-zacht:#5C5C55;
   --lijn:#D9D7D0; --primair:#4A5B41; --accent:#C9962B;
 }
-@media (min-width: 900px) { :root { --kop-hoogte: 92px; } }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; background: var(--balk-bg); }
@@ -70,10 +78,15 @@ ul { margin: 0; }
 /* ---------- Balk boven ---------- */
 .site-kop { position: sticky; top: 0; z-index: 40; background: var(--balk-bg); border-bottom: 1px solid var(--balk-lijn); }
 .site-kop .wrap { display: flex; align-items: center; gap: var(--sp-4); min-height: var(--kop-hoogte); }
+/* Deze maten staan gelijk aan die van index.html, zodat het logo in de balk op
+   elk scherm even groot staat als op de hoofdpagina. */
 .merk { display: inline-flex; text-decoration: none; }
 .merk-beeld { display: block; height: 34px; width: auto; }
 @media (max-width: 560px) { .merk-beeld { height: 27px; } }
 @media (max-width: 560px) and (orientation: portrait) { .merk-beeld { height: 42px; } }
+@media (min-width: 1100px) { :root { --kop-hoogte: 92px; } .merk-beeld { height: 54px; } }
+@media (orientation: landscape) and (max-height: 560px) { .merk-beeld { height: 42px; } }
+@media (max-width: 560px) { .site-kop .wrap { gap: var(--sp-2); } .merk { margin-right: auto; } }
 .terug { margin-left: auto; font-family: var(--font-mono); font-size: var(--t-xs); letter-spacing: 0.08em;
          text-transform: uppercase; color: var(--balk-tekst-zacht); text-decoration: none; transition: color .18s; }
 .thema-knop {
@@ -202,7 +215,13 @@ h1 { font-size: var(--t-3xl); max-width: 20ch; }
   const knop = document.querySelector('[data-thema]');
   const zon = knop.querySelector('.icoon-zon');
   const maan = knop.querySelector('.icoon-maan');
-  const isDonker = () => document.documentElement.dataset.theme === 'dark';
+  const systeem = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // Zonder eigen keuze volgt de pagina het apparaat; klikt de bezoeker, dan wint die.
+  const isDonker = () => {
+    const keuze = document.documentElement.dataset.theme;
+    return keuze ? keuze === 'dark' : systeem.matches;
+  };
   function toonIcoon() {
     zon.style.display = isDonker() ? 'none' : 'block';
     maan.style.display = isDonker() ? 'block' : 'none';
@@ -210,6 +229,9 @@ h1 { font-size: var(--t-3xl); max-width: 20ch; }
   knop.addEventListener('click', () => {
     document.documentElement.dataset.theme = isDonker() ? 'light' : 'dark';
     toonIcoon();
+  });
+  systeem.addEventListener('change', () => {
+    if (!document.documentElement.dataset.theme) toonIcoon();
   });
   toonIcoon();
 })();

@@ -74,9 +74,11 @@ Er staat bewust geen telefoonnummer op de site: contact loopt via het formulier 
 Wilt u toch gebeld kunnen worden, dan is één regel in het contactblok genoeg —
 `<div class="contact-rij"><dt>Telefoon</dt><dd><a href="tel:+31612345678">06 – 12 34 56 78</a></dd></div>`.
 
-De site staat standaard in de lichte modus, ongeacht wat de bezoeker op zijn telefoon of computer
-heeft ingesteld. Wie liever donker leest, klikt op het knopje in de balk. Wilt u dat omdraaien en
-juist de instelling van de bezoeker volgen, zeg het dan — dat is een klein blokje CSS.
+De site volgt de instelling van het apparaat: staat de telefoon of computer op donker, dan opent de
+site donker. Klikt de bezoeker op het knopje in de balk, dan wint die keuze zolang hij op de site
+is. Zet hij zijn apparaat om terwijl de pagina openstaat, dan gaat de site mee — tenzij hij hier
+zelf al geklikt had. Die keuze wordt niet onthouden tussen bezoeken; bij een nieuwe bezoek telt de
+apparaatinstelling weer.
 
 Verder: navigatie die op smalle schermen naar een tweede regel zakt, toetsenbordnavigatie, en
 rustige animaties die uitgaan als iemand "minder beweging" heeft ingesteld.

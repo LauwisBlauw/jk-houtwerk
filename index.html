@@ -130,9 +130,21 @@
   color-scheme: light;
 }
 
-/* De lichte modus is de standaard: de site kijkt niet naar de instelling van de
-   bezoeker. Wie liever donker leest, klikt op het knopje in de balk — dat zet
-   data-theme, en de kleuren hieronder nemen het dan over. */
+/* De site volgt de instelling van het apparaat. Staat de telefoon of computer op
+   donker, dan opent de site donker. Klikt de bezoeker op het knopje in de balk,
+   dan zet dat data-theme en wint zijn eigen keuze van de systeeminstelling. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg:#16150F; --bg-elev:#201F18; --diep-bg:#100F0A; --diep-elev:#1C1B14;
+    --tekst:#EDEBE3; --tekst-zacht:#A8AA9B;
+    --tekst-op-diep:#EDEBE3; --tekst-op-diep-zacht:#A8AA9B;
+    --lijn:#33352C; --lijn-diep:#2A2C24;
+    --primair:#8FA37F; --primair-hover:#A9BC98;
+    --accent:#DDA945; --accent-tekst:#141208;
+    --schaduw: 0 1px 0 rgba(0,0,0,.3), 0 14px 30px -18px rgba(0,0,0,.7);
+  }
+}
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg:#16150F; --bg-elev:#201F18; --diep-bg:#100F0A; --diep-elev:#1C1B14;
@@ -1009,9 +1021,12 @@ div.foto { display: grid; place-items: center; }
   const zon = knop.querySelector('.icoon-zon');
   const maan = knop.querySelector('.icoon-maan');
 
-  // Zonder keuze van de bezoeker staat de site in de lichte modus.
+  const systeem = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // Zonder eigen keuze volgt de site het apparaat; klikt de bezoeker, dan wint die.
   function isDonker() {
-    return document.documentElement.dataset.theme === 'dark';
+    const keuze = document.documentElement.dataset.theme;
+    return keuze ? keuze === 'dark' : systeem.matches;
   }
   function toonIcoon() {
     const donker = isDonker();
@@ -1021,6 +1036,11 @@ div.foto { display: grid; place-items: center; }
   knop.addEventListener('click', () => {
     document.documentElement.dataset.theme = isDonker() ? 'light' : 'dark';
     toonIcoon();
+  });
+  // Zet de bezoeker zijn apparaat om terwijl de pagina openstaat, dan gaat de
+  // site mee — tenzij hij hier zelf al een keuze had gemaakt.
+  systeem.addEventListener('change', () => {
+    if (!document.documentElement.dataset.theme) toonIcoon();
   });
   toonIcoon();
 })();
