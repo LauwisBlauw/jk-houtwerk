@@ -877,7 +877,10 @@ div.foto { display: grid; place-items: center; }
           <div class="formulier-voet">
             <button class="btn btn-accent" type="submit">Versturen</button>
           </div>
-          <p class="formulier-melding" id="formulier-melding" hidden></p>
+          <!-- role="status" laat een schermlezer de melding voorlezen zodra hij
+               verschijnt. Het script zet de melding eerst zichtbaar en vult daarna
+               de tekst; in die volgorde wordt de aankondiging betrouwbaar gedaan. -->
+          <p class="formulier-melding" id="formulier-melding" role="status" hidden></p>
         </form>
 
         <!-- AANPASSEN: e-mailadres -->
@@ -1074,15 +1077,51 @@ div.foto { display: grid; place-items: center; }
     }, verbergNa);
   };
 
+  /* "naam, e-mailadres en vraag of klus" — met komma's en een "en" voor het laatste. */
+  const opsomming = (d) => d.length < 2 ? d[0] : d.slice(0, -1).join(', ') + ' en ' + d[d.length - 1];
+
+  /* Noemt alleen wat de bezoeker nog moet doen. Heeft hij zijn naam al ingevuld,
+     dan hoeft die niet in de melding te staan. Spaties tellen niet als invulling. */
+  function watOntbreekt() {
+    const leeg = [];
+    let eerste = null, mailOngeldig = false;
+
+    const leegVeld = (veld, naam) => {
+      if (veld.value.trim()) return false;
+      leeg.push(naam);
+      eerste = eerste || veld;
+      return true;
+    };
+
+    leegVeld(form.naam, 'naam');
+    if (!leegVeld(form.email, 'e-mailadres') && !form.email.checkValidity()) {
+      mailOngeldig = true;
+      eerste = eerste || form.email;
+    }
+    leegVeld(form.bericht, 'vraag of klus');
+
+    const zinnen = [];
+    if (leeg.length) zinnen.push('Vul uw ' + opsomming(leeg) + ' in.');
+    if (mailOngeldig) zinnen.push('Controleer uw e-mailadres, daar lijkt iets niet te kloppen.');
+
+    if (zinnen.length) return { tekst: zinnen.join(' '), veld: eerste };
+
+    /* Vangnet: komt er ooit een veld bij met een eigen eis, dan blijft het
+       formulier gecontroleerd, ook al kent bovenstaande code dat veld niet. */
+    if (form.checkValidity()) return null;
+    return { tekst: 'Controleer de rood omlijnde velden.', veld: form.querySelector(':invalid') };
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!form.checkValidity()) {
+    const gebrek = watOntbreekt();
+    if (gebrek) {
       form.classList.remove('fouten-gedoofd');
-      toon('Vul uw naam, e-mailadres en uw vraag of klus in.', 'is-fout', 3000);
+      toon(gebrek.tekst, 'is-fout', 3000);
       /* De rode randen doven tegelijk met de melding. */
       doofTimer = setTimeout(() => form.classList.add('fouten-gedoofd'), 3000);
-      form.querySelector(':invalid')?.focus();
+      gebrek.veld?.focus();
       return;
     }
 
