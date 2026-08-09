@@ -12,7 +12,9 @@ bestand om het in de browser te openen — er is geen server, build-stap of inte
 | Galerij | Schuifgalerij: één foto in beeld, schuift elke 5 seconden door |
 | Contact | Formulier waarin klanten hun gegevens en hun vraag of klus achterlaten, met e-mailadres en werkgebied ernaast |
 
-De privacyverklaring staat op een eigen pagina, `privacy.html`, bereikbaar via de voettekst. Ook
+De privacyverklaring staat op een eigen pagina, `privacy.html`, bereikbaar via de voettekst. In de
+adresbalk staat hij als **www.jkhoutwerk.nl/privacy** — GitHub Pages laat de `.html` vanzelf weg,
+dus de links wijzen naar `/privacy` en niet naar het bestand. Ook
 die pagina is zelfstandig: eigen stijl, geen gedeelde bestanden. Wijzigt u de kleuren in
 `index.html`, pas ze dan ook bovenin `privacy.html` aan — daar staat dezelfde `:root` in het
 klein.
