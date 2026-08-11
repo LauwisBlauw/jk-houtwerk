@@ -1216,6 +1216,27 @@ div.foto { display: grid; place-items: center; }
     if (foto) foto.loading = 'eager';
   }
 
+  // De dia's liggen met opacity 0 over elkaar. Chrome ziet ze daardoor als "nog
+  // niet nodig" en laadt ze niet uit zichzelf, ook al staan ze in beeld. Eén dia
+  // vooruit ophalen is te krap: op een trage verbinding haalt een foto van een
+  // paar honderd kilobyte de vijf seconden tot de volgende wissel niet, en dan
+  // staat er een leeg vlak. Zodra de galerij in beeld komt halen we ze daarom
+  // allemaal op — samen zo'n 1,4 MB, en pas nadat de rest van de pagina staat.
+  function laadAlles() {
+    items.forEach((_, i) => laadAlvast(i));
+  }
+  if ('IntersectionObserver' in window) {
+    const wacht = new IntersectionObserver((waarnemingen) => {
+      if (waarnemingen.some((w) => w.isIntersecting)) {
+        laadAlles();
+        wacht.disconnect();
+      }
+    }, { rootMargin: '200px' });
+    wacht.observe(dia);
+  } else {
+    laadAlles();
+  }
+
   function naar(i) {
     const volgende = (i + items.length) % items.length;
     if (volgende === index) return;
