@@ -1149,11 +1149,10 @@ div.foto { display: grid; place-items: center; }
     }
   });
 
-  /* Typt de bezoeker weer, dan mag de rode omlijning meteen terugkomen. */
-  form.addEventListener('input', () => {
-    clearTimeout(doofTimer);
-    form.classList.remove('fouten-gedoofd');
-  });
+  /* De rode omlijning komt alleen terug bij een volgende klik op Versturen, niet
+     al terwijl de bezoeker aan het invullen is. Zou hij meelopen met het typen,
+     dan kleurt het e-mailveld rood zolang het adres nog half af is — dat leest
+     als een standje terwijl er niets mis is. */
 
   /* Springt de bezoeker via het menu, de voet of het logo naar een ander deel van
      de site, dan gaat de foutmelding met de rode randen weg. Wat hij al had
